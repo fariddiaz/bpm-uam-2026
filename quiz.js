@@ -87,7 +87,7 @@
       if (info.joinUrl) publicJoinUrl = info.joinUrl;
       $('connBanner').classList.add('live');
       $('connStatusText').textContent = tunnelActive
-        ? 'SALA EN VIVO MULTIJUGADOR · Túnel HTTPS público activo'
+        ? 'SALA EN VIVO · Conectados por internet (datos móviles o Wi‑Fi)'
         : 'SALA EN VIVO MULTIJUGADOR · Red local activa';
       renderHostQR();
       connectLiveSync();
