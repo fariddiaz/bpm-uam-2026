@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BPM Arena · Actividad Móvil — Gerencia de la Calidad UAM</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Crect width=%2716%27 height=%2716%27 fill=%27%230B7A55%27/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="quiz.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-sq" aria-hidden="true"></span>
+      <span>BPM Arena · UAM</span>
+    </div>
+    <div class="mode-switch">
+      <button class="pill-btn active" id="switchPlayerBtn">Celular (Jugador)</button>
+      <button class="pill-btn" id="switchHostBtn">Proyector (Anfitrión)</button>
+      <a class="pill-btn" href="index.html">← Diapositivas</a>
+    </div>
+  </header>
+
+  <main class="wrap mobile-narrow" id="mainWrap">
+    <div class="status-banner" id="connBanner">
+      <span id="connStatusText">Detectando modo de sala…</span>
+      <span class="mono" id="pinBadge">PIN 2674</span>
+    </div>
+
+    <!-- ==================== VISTA JUGADOR (CELULAR) ==================== -->
+    <section id="playerView">
+      <!-- 1. Join Screen -->
+      <div class="panel" id="pJoinCard">
+        <div class="mono" style="font-size:11px;color:var(--verde);font-weight:700;">ACTIVIDAD EN VIVO · RES. 2674 DE 2013</div>
+        <h1 style="margin:6px 0 6px;font-family:var(--font-display);font-size:26px;">Únete al reto de planta</h1>
+        <p style="margin:0 0 16px;font-size:14px;color:var(--acero);line-height:1.45;">
+          8 preguntas · 20–25 s por pregunta. Entre más rápido aciertes, mayor bonificación por velocidad.
+        </p>
+
+        <form id="joinForm">
+          <label class="field-label" for="nickInput">Tu nombre o apodo</label>
+          <input class="text-input" id="nickInput" maxlength="24" placeholder="Ej. Camila G." required>
+
+          <label class="field-label" for="roleInput">Rol en planta (escenario didáctico)</label>
+          <select class="text-input" id="roleInput">
+            <option value="Auditor INVIMA">Auditor INVIMA</option>
+            <option value="Jefe de Calidad">Jefe de Calidad</option>
+            <option value="Supervisor Saneamiento">Supervisor Saneamiento</option>
+            <option value="Operario de Línea">Operario de Línea</option>
+          </select>
+
+          <label class="field-label" for="pinInput">PIN de sala</label>
+          <input class="text-input mono" id="pinInput" value="2674" inputmode="numeric" maxlength="6" required>
+
+          <button class="cta-btn" type="submit">Entrar a la sala →</button>
+        </form>
+      </div>
+
+      <!-- 2. Lobby Wait Screen (Live Multiplayer) -->
+      <div class="panel hidden" id="pLobbyCard" style="text-align:center;">
+        <div class="mono" style="font-size:12px;color:var(--verde);font-weight:700;">CONECTADO A SALA 2674</div>
+        <h2 id="pLobbyName" style="margin:8px 0 4px;font-family:var(--font-display);font-size:24px;">—</h2>
+        <div id="pLobbyRole" class="mono" style="font-size:12px;color:var(--azul);margin-bottom:16px;">—</div>
+        <div style="padding:18px;background:var(--soft);border-radius:10px;margin-bottom:14px;">
+          <div style="font-size:15px;font-weight:700;">Esperando que el expositor inicie…</div>
+          <div class="mono" style="font-size:12px;color:var(--acero);margin-top:6px;">
+            Jugadores en sala: <b id="pLobbyCount">1</b>
+          </div>
+        </div>
+        <button class="cta-btn outline" id="leaveRoomBtn" type="button">Cambiar nombre</button>
+      </div>
+
+      <!-- 3. Active Question -->
+      <div class="panel hidden" id="pQuestionCard">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span class="mono" style="font-size:12px;font-weight:700;color:var(--azul);" id="pQProgress">PREGUNTA 1 / 8</span>
+          <span class="mono" style="font-size:12px;font-weight:700;" id="pScoreBadge">0 pts</span>
+        </div>
+
+        <div class="timer-row">
+          <div class="timer-track"><div class="timer-fill" id="pTimerFill"></div></div>
+          <div class="timer-num" id="pTimerNum">20s</div>
+        </div>
+
+        <h2 class="q-stem" id="pQStem">—</h2>
+
+        <div class="options-grid" id="pOptionsGrid"></div>
+        <p class="mono hidden" id="pLockedMsg" style="text-align:center;margin:14px 0 0;font-size:12.5px;color:var(--azul);font-weight:700;">
+          Respuesta registrada · Esperando cierre de tiempo…
+        </p>
+      </div>
+
+      <!-- 4. Feedback Screen -->
+      <div class="hidden" id="pFeedbackWrap">
+        <div class="feedback-card ok" id="pFeedbackCard">
+          <div class="mono" style="font-size:12px;letter-spacing:0.06em;" id="pFbTag">RESULTADO</div>
+          <h2 style="margin:6px 0 2px;font-family:var(--font-display);font-size:28px;" id="pFbHeadline">¡Correcto!</h2>
+          <div class="feedback-pts" id="pFbPoints">+0 pts</div>
+          <div class="mono" style="font-size:12.5px;opacity:0.92;" id="pFbTotals">Total: 0 pts · Racha: 0</div>
+          <div class="norm-explain">
+            <div class="mono" style="font-size:11px;font-weight:700;margin-bottom:4px;" id="pFbArt">RES. 2674/2013</div>
+            <div id="pFbExplain">—</div>
+          </div>
+        </div>
+        <button class="cta-btn secondary hidden" id="pNextLocalBtn" style="margin-top:12px;">Siguiente pregunta →</button>
+      </div>
+
+      <!-- 5. Final Score Card -->
+      <div class="panel hidden" id="pFinishCard" style="text-align:center;">
+        <div class="mono" style="font-size:11.5px;color:var(--verde);font-weight:700;">AUDITORÍA COMPLETADA</div>
+        <h2 id="pFinalName" style="margin:8px 0 4px;font-family:var(--font-display);font-size:26px;">—</h2>
+        <div id="pFinalRankBadge" class="mono" style="font-size:13px;color:var(--azul);font-weight:700;margin-bottom:14px;">—</div>
+        <div style="background:var(--grafito);color:var(--porcelana);border-radius:10px;padding:18px;margin-bottom:14px;">
+          <div class="mono" style="font-size:11px;color:#84E4C3;">PUNTAJE FINAL</div>
+          <div style="font-family:var(--font-num);font-size:54px;line-height:1;margin:6px 0;" id="pFinalScore">0</div>
+          <div class="mono" style="font-size:12.5px;" id="pFinalAcc">0 / 8 aciertos</div>
+        </div>
+        <div id="pFinalBoard" style="text-align:left;margin-bottom:14px;"></div>
+        <button class="cta-btn" id="pPlayAgainBtn">Jugar de nuevo</button>
+      </div>
+    </section>
+
+    <!-- ==================== VISTA ANFITRIÓN (PROYECTOR) ==================== -->
+    <section id="hostView" class="hidden">
+      <div class="host-grid">
+        <div class="qr-card">
+          <div class="mono" style="font-size:11px;color:var(--verde);font-weight:700;margin-bottom:8px;">ESCANEA DESDE TU CELULAR</div>
+          <div id="hostQrBox"></div>
+          <div class="mono" style="font-size:11px;word-break:break-all;color:var(--azul);margin-bottom:8px;" id="hostJoinUrl">—</div>
+          <div style="background:var(--grafito);color:var(--porcelana);border-radius:8px;padding:10px;">
+            <div class="mono" style="font-size:10px;color:#84E4C3;">PIN DE SALA</div>
+            <div class="mono" style="font-size:30px;font-weight:700;letter-spacing:0.14em;">2674</div>
+          </div>
+          <button class="cta-btn outline" id="hostResetBtn" style="margin-top:10px;min-height:42px;font-size:13px;">Reiniciar partida</button>
+        </div>
+
+        <div class="panel" id="hostStagePanel">
+          <!-- Host Lobby -->
+          <div id="hLobby">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+              <div>
+                <div class="mono" style="font-size:11px;color:var(--azul);font-weight:700;">SALA DE ESPERA · BPM ARENA</div>
+                <h2 style="margin:4px 0 0;font-family:var(--font-display);font-size:26px;">
+                  <span id="hPlayerCount">0</span> compañeros conectados
+                </h2>
+              </div>
+              <button class="cta-btn" id="hStartBtn" style="width:auto;padding:12px 24px;">Iniciar Pregunta 1 →</button>
+            </div>
+            <p id="hModeHint" style="margin:8px 0 12px;font-size:13.5px;color:var(--acero);">
+              Cuando el grupo haya escaneado el código QR, inicia la partida.
+            </p>
+            <div class="player-chips" id="hPlayerChips"></div>
+          </div>
+
+          <!-- Host Active Question / Reveal -->
+          <div id="hQuestion" class="hidden">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px;">
+              <span class="mono" style="font-size:12px;font-weight:700;color:var(--azul);" id="hQNum">PREGUNTA 1 / 8</span>
+              <span class="mono" style="font-size:12px;font-weight:700;color:var(--verde);" id="hAnsweredCount">0 respondieron</span>
+            </div>
+            <div class="timer-row">
+              <div class="timer-track"><div class="timer-fill" id="hTimerFill"></div></div>
+              <div class="timer-num" id="hTimerNum">20s</div>
+            </div>
+            <h2 class="q-stem" id="hQStem">—</h2>
+            <div class="host-options-grid" id="hOptionsGrid"></div>
+
+            <div id="hRevealBox" class="hidden" style="margin-top:16px;padding:14px;border-radius:10px;background:var(--verde-tint);border:1px solid rgba(13,110,82,0.3);">
+              <div class="mono" style="font-size:11.5px;font-weight:700;color:var(--verde);" id="hRevealArt">RES. 2674/2013</div>
+              <p id="hRevealExplain" style="margin:5px 0 0;font-size:14px;line-height:1.48;"></p>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
+              <button class="cta-btn secondary" id="hRevealBtn" style="width:auto;flex:1;">Revelar respuesta</button>
+              <button class="cta-btn hidden" id="hNextBtn" style="width:auto;flex:1;">Siguiente pregunta →</button>
+            </div>
+          </div>
+
+          <!-- Host Podium -->
+          <div id="hFinish" class="hidden">
+            <div class="mono" style="font-size:11.5px;color:var(--verde);font-weight:700;">PODIO FINAL · BPM ARENA</div>
+            <h2 style="margin:4px 0 12px;font-family:var(--font-display);font-size:28px;">Mejores Auditores de la Sesión</h2>
+            <div class="podium-grid" id="hPodium"></div>
+            <div id="hLeaderboard"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="qr.js"></script>
+  <script src="quiz-data.js"></script>
+  <script src="quiz.js"></script>
+</body>
+</html>

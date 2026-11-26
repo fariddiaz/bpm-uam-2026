@@ -1,0 +1,8 @@
+{
+  "name": "bpm-uam-2026",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Exposición BPM (Res. 2674 de 2013) y BPM Arena — Gerencia de la Calidad, UAM 2026",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=20" }
+}

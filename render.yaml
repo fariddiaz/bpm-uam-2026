@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: bpm-arena-uam
+    runtime: node
+    plan: free
+    buildCommand: "echo sin dependencias"
+    startCommand: node server.js
+    healthCheckPath: /api/info
+    envVars:
+      - key: HOST_KEY
+        sync: false
