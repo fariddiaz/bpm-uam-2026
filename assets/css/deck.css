@@ -435,3 +435,6 @@ img { display: block; max-width: 100%; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01s !important; transition-duration: 0.01s !important; }
 }
+
+/* Dock limpio: sin nombre del expositor ni temporizador */
+.dock__sep, .dock__speaker, .dock__timer { display: none !important; }
